@@ -24,21 +24,34 @@ export const registerUser = async (req, res) => {
 
 // login user
 export const loginUser = async (req, res) => {
-  const { email, password } = req.body;
+  console.log(req.headers.authorization);
+  const tokenId = req.headers.authorization;
+  const ticket = await client.verifyIdToken({
+    idToken: tokenId.slice(7),
+    audience: process.env.GOOGLE_CLIENT_ID,
+  });
+  const payload = ticket.getPayload();
+  console.log(payload);
+  if (payload.aud != process.env.GOOGLE_CLIENT_ID)
+    return res.send('Unauthorised');
+  const { email, name } = payload;
+  const authToken = jwt.sign({ email, name }, process.env.JWT_SECRET, {
+    expiresIn: '1h',
+  });
 
+  res.json({ authToken });
+};
+
+// verify user
+export const verifyUser = async (req, res) => {
   try {
-    const user = await prisma.user.findUnique({
-      where: {
-        email,
-      },
-    });
-
-    if (!user) {
-      res.status(400).json({ error: 'User not found' });
+    const authToken = req.headers.authorization;
+    if (!authToken) {
+      return res.send('Unauthorised');
     }
-
-    res.status(200).json(user);
-  } catch (error) {
-    res.status(400).json({ error: error.message });
+    const decoded = jwt.verify(authToken.slice(7), process.env.JWT_SECRET);
+  } catch (e) {
+    return res.json({ data: 'NOT Authorised' });
   }
+  res.json(user);
 };

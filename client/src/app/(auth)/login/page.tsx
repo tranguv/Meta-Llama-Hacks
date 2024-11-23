@@ -28,7 +28,7 @@ const SignInPage = () => {
                         <h2 className="w-full text-center border-b border-black leading-[0.1em] my-[10px_0_20px] mt-4 text-xs">
                             <span className="bg-[rgb(243,244,246)] px-2 text-slate-400">OR CONTINUE WITH</span>
                         </h2>
-                        <button className='bg-white text-black p-2 rounded-md'>Googlr</button>
+                        <button className='bg-white text-black p-2 rounded-md'>Google</button>
                     </div>
                 </div>
             </div>
