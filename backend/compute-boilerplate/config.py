@@ -4,7 +4,7 @@ import os
 dotenv.load_dotenv()
 
 class Config:
-    MODEL_NAME: str = "meta-llama/Meta-Llama-3.1-405B-Instruct"
+    MODEL_NAME: str = "openai-community/gpt2"
     PORT: int = 8000
     DEFAULT_MAX_TOKENS: int = 1000
     DEFAULT_TEMPERATURE: float = 0.5
