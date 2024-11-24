@@ -8,6 +8,16 @@ Empowering caregivers and physicians with time-saving, innovative solutions to i
 Check out the demo video of Llama Prob-Llama Helper:  
 https://drive.google.com/file/d/1O5xDpY-nqYfj2gK1JkaKJn2kNI5QxPfd/view
 
+## Team 🧑‍🤝‍🧑
+
+| S.No. | Name                   | GitHub Username:octocat:                            | Email                       |
+| ----- | ---------------------- | -------------------------------------------------- | --------------------------- |
+| 1.    | Trang Vu               | [@tranguv](https://github.com/tranguv)             |annavu3806@gmail.com |
+| 2.    | Jimmy Khang Nguyen     | [@Jimmykhangnguyen](https://github.com/Jimmykhangnguyen) |                             |
+| 3.    | Thang Nguyen           | [@Thangnguyenvn98](https://github.com/Thangnguyenvn98) |thang.nguyen@torontomu.ca |
+| 4.    | Alejandro Castellanos  | [@k2jac9](https://github.com/k2jac9)               | alexcastellanos29@gmail.com |
+
+
 ## 🌟 Our Mission
 
 To empower families and doctors with tools that:
