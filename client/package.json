@@ -10,6 +10,7 @@
   },
   "proxy": "http://195.242.13.143:8000",
   "dependencies": {
+    "@img/sharp-linux-x64": "^0.33.5",
     "@radix-ui/react-avatar": "^1.1.1",
     "@radix-ui/react-label": "^2.1.0",
     "@radix-ui/react-slot": "^1.1.0",
