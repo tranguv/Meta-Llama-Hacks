@@ -1,33 +1,33 @@
-import React from 'react';
-import { useVoiceToText } from "react-speakup";
-import { ChatBubble, ChatBubbleAvatar, ChatBubbleMessage, ChatBubbleAction, ChatBubbleActionWrapper } from '@/components/ui/chat/chat-bubble'
-import { ChatMessageList } from '@/components/ui/chat/chat-message-list'
+import React from "react";
+import {
+    ChatBubble,
+    ChatBubbleAvatar,
+    ChatBubbleMessage,
+} from "@/components/ui/chat/chat-bubble";
+import { ChatMessageList } from "@/components/ui/chat/chat-message-list";
 
-const ChatPage = () => {
-    const { transcript } = useVoiceToText();
+interface Chat {
+    variant: boolean;
+    message: string;
+}
+
+interface ChatPageProps {
+    data: Chat[];
+}
+
+const ChatPage: React.FC<ChatPageProps> = ({ data }) => {
     return (
         <ChatMessageList>
-            <ChatBubble variant='sent'>
-                <ChatBubbleAvatar fallback='US' />
-                <ChatBubbleMessage variant='sent'>
-                Hello, how has your day been? I hope you are doing well.
-                </ChatBubbleMessage>
-            </ChatBubble>
-
-            <ChatBubble variant='received'>
-                <ChatBubbleAvatar fallback='AI' />
-                <ChatBubbleMessage variant='received'>
-                Hi, I am doing well, thank you for asking. How can I help you today?
-                </ChatBubbleMessage>
-            </ChatBubble>
-
-            <ChatBubble variant='received'>
-                <ChatBubbleAvatar fallback='AI' />
-                <ChatBubbleMessage isLoading />
-            </ChatBubble>
-            </ChatMessageList>
+            {data.map((chat: Chat, index: number) => (
+                <ChatBubble key={index} variant={chat.variant ? "sent" : "received"}>
+                    <ChatBubbleAvatar fallback={chat.variant ? "US" : "AI"} />
+                    <ChatBubbleMessage variant={chat.variant ? "sent" : "received"}>
+                        {chat.message}
+                    </ChatBubbleMessage>
+                </ChatBubble>
+            ))}
+        </ChatMessageList>
     );
 };
 
-export default ChatPage
-
+export default ChatPage;

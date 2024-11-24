@@ -1,11 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import doctor from '../../public/doctor.webp';
+import doctor from "../../public/doctor.webp";
 import { Button } from "@/components/ui/button";
-import { FaMicrophone } from "react-icons/fa";
-import { FaPause } from "react-icons/fa";
-import { use, useEffect, useState } from "react";
+import { FaMicrophone, FaPause } from "react-icons/fa";
+import { useEffect, useState } from "react";
 import ChatPage from "./ChatPage";
 import { useVoiceToText } from "react-speakup";
 
@@ -14,19 +13,72 @@ export default function HomePage() {
         continuous: true,
         lang: "en-US",
     });
+
+    interface Chat {
+        variant: boolean;
+        message: string;
+    }
+
+    const [data, setData] = useState<Chat[]>([]);
     const [isRecording, setIsRecording] = useState<boolean>(false);
+    const [isUser, setIsUser] = useState<boolean>(true);
 
     const startRecording = () => {
         setIsRecording(true);
+        startListening();
     };
 
     const stopRecording = () => {
         setIsRecording(false);
+        stopListening();
+    };
+
+    const sendToApi = async (message: string) => {
+        try {
+            const response = await fetch("http://195.242.13.143:8000/ask-all/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ "question": message }),
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const apiResponse = await response.json();
+
+            // Add the API response to the chat data
+            setData((prevData) => [
+                ...prevData,
+                { variant: false, message: apiResponse.reply || "No response" },
+            ]);
+        } catch (error) {
+            console.error("Error sending transcript to API:", error);
+        }
     };
 
     useEffect(() => {
-        console.log("transcript", transcript);
-    }, [transcript]);
+        if (!isRecording && transcript) {
+            // Add user's transcript to chat data
+            setData((prevData) => [
+                ...prevData,
+                { variant: isUser, message: transcript },
+            ]);
+
+            // Send transcript to the API
+            sendToApi(transcript);
+
+            // Reset transcript
+            reset();
+        }
+    }, [transcript, isRecording]);
+
+    // Log `data` every time it changes
+    useEffect(() => {
+        console.log("Chat data updated:", data);
+    }, [data]);
 
     return (
         <div className="flex items-center justify-center py-[8%]">
@@ -40,22 +92,14 @@ export default function HomePage() {
                     />
                     {isRecording ? (
                         <Button
-                            onClick={() => {
-                                console.log("Stop Listening");
-                                stopListening();
-                                stopRecording();
-                            }}
+                            onClick={stopRecording}
                             className="fixed rounded-full bottom-[80px] h-[80px] w-[80px] left-[20%] items-center justify-center text-base font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 animate-pulse"
                         >
                             <FaPause size={20} />
                         </Button>
                     ) : (
                         <Button
-                            onClick={() => {
-                                console.log("Start Listening");
-                                startListening();
-                                startRecording();
-                            }}
+                            onClick={startRecording}
                             className="fixed rounded-full bottom-[80px] h-[80px] w-[80px] left-[20%] items-center justify-center text-base font-medium text-white bg-lime-600 hover:bg-lime-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 animate-pulse"
                         >
                             <FaMicrophone size={20} />
@@ -63,10 +107,9 @@ export default function HomePage() {
                     )}
                 </div>
 
-                {/* Right Section - Black Div */}
+                {/* Right Section - Chat Page */}
                 <div className="w-2/3 h-full flex items-center justify-center text-white rounded-r-[20px]">
-                    {transcript}
-                    <ChatPage />
+                    <ChatPage data={data} />
                 </div>
             </div>
         </div>
