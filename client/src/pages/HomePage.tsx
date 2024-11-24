@@ -4,24 +4,41 @@ import Image from "next/image";
 import doctor from "../../public/doctor.webp";
 import { Button } from "@/components/ui/button";
 import { FaMicrophone, FaPause } from "react-icons/fa";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ChatPage from "./ChatPage";
-import { useVoiceToText } from "react-speakup";
+import { useVoiceToText, useTextToVoice } from "react-speakup";
 
 export default function HomePage() {
     const { startListening, stopListening, transcript, reset } = useVoiceToText({
         continuous: true,
         lang: "en-US",
     });
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const { speak } = useTextToVoice();
 
     interface Chat {
         variant: boolean;
         message: string;
     }
 
-    const [data, setData] = useState<Chat[]>([]);
+    const [data, setData] = useState<Chat[]>([
+        {
+            variant: false,
+            message: "Hello! I am Llama Care, how can I help you? Tap the microphone to start speaking. Click again to stop recording.",
+        },
+    ]);
     const [isRecording, setIsRecording] = useState<boolean>(false);
     const [isUser, setIsUser] = useState<boolean>(true);
+    const messageEndRef = useRef<HTMLDivElement>(null); // Ref to track the end of messages
+
+    useEffect(() => {
+        if (messageEndRef.current) {
+            messageEndRef.current.scrollTop = messageEndRef.current.scrollHeight;
+        }
+    }, [transcript]);
+    // useEffect(() => {
+    //     messageEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    // }, [transcript]);
 
     const startRecording = () => {
         setIsRecording(true);
@@ -34,55 +51,48 @@ export default function HomePage() {
     };
 
     const sendToApi = async (message: string) => {
+        setIsLoading(true);
         try {
             const response = await fetch("http://195.242.13.143:8000/ask-all/", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ question: message }), // Send the message as "question"
+                body: JSON.stringify({ question: message }),
             });
-    
+
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-    
+
             const apiResponse = await response.json();
-    
-            // Log the full response to inspect the data
-            console.log(apiResponse);
-    
-            // Remove markdown ** (bold markers) from the response text
-            const cleanResponse = apiResponse.response.replace(/\*\*/g, '').trim();
-            
-            // Add the cleaned API response to the chat data
+
+            const cleanResponse = apiResponse.response.replace(/\*\*/g, "").trim();
+            setIsLoading(false);
             setData((prevData) => [
                 ...prevData,
                 { variant: false, message: cleanResponse || "No response" },
             ]);
+
+            // Speak the response using text-to-voice
+            speak();
         } catch (error) {
             console.error("Error sending transcript to API:", error);
         }
     };
-    
-    
+
     useEffect(() => {
         if (!isRecording && transcript) {
-            // Add user's transcript to chat data
             setData((prevData) => [
                 ...prevData,
                 { variant: isUser, message: transcript },
             ]);
 
-            // Send transcript to the API
             sendToApi(transcript);
-
-            // Reset transcript
             reset();
         }
     }, [transcript, isRecording]);
 
-    // Log `data` every time it changes
     useEffect(() => {
         console.log("Chat data updated:", data);
     }, [data]);
@@ -116,7 +126,7 @@ export default function HomePage() {
 
                 {/* Right Section - Chat Page */}
                 <div className="w-2/3 h-full flex items-center justify-center text-white rounded-r-[20px]">
-                    <ChatPage data={data} />
+                    <ChatPage data={data} isLoading={isLoading} />
                 </div>
             </div>
         </div>

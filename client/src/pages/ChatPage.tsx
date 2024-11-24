@@ -13,9 +13,10 @@ interface Chat {
 
 interface ChatPageProps {
     data: Chat[];
+    isLoading: boolean;
 }
 
-const ChatPage: React.FC<ChatPageProps> = ({ data }) => {
+const ChatPage: React.FC<ChatPageProps> = ({ data, isLoading }) => {
     return (
         <ChatMessageList>
             {data.map((chat: Chat, index: number) => (
@@ -26,6 +27,14 @@ const ChatPage: React.FC<ChatPageProps> = ({ data }) => {
                     </ChatBubbleMessage>
                 </ChatBubble>
             ))}
+            {isLoading && (
+                <ChatBubble layout="ai">
+                    <ChatBubbleAvatar src="/avatar.png" fallback="L" />
+                    <ChatBubbleMessage variant="received" isLoading>
+                        Loading...
+                    </ChatBubbleMessage>
+                </ChatBubble>
+            )}
         </ChatMessageList>
     );
 };
