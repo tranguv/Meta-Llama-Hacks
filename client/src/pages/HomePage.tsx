@@ -65,9 +65,6 @@ export default function HomePage() {
 
                 {/* Right Section - Black Div */}
                 <div className="w-2/3 h-full flex items-center justify-center text-white rounded-r-[20px]">
-                    {/* <button onClick={startListening}>Start Listening</button>
-                    <button onClick={stopListening}>Stop Listening</button>
-                    <button onClick={reset}>Reset Transcript</button> */}
                     {transcript}
                     <ChatPage />
                 </div>
