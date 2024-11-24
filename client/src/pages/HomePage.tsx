@@ -40,15 +40,15 @@ export default function HomePage() {
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ "question": message }),
+                body: JSON.stringify({ question: message }), // Updated to send "question" as key
             });
-
+    
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-
+    
             const apiResponse = await response.json();
-
+    
             // Add the API response to the chat data
             setData((prevData) => [
                 ...prevData,
@@ -58,6 +58,7 @@ export default function HomePage() {
             console.error("Error sending transcript to API:", error);
         }
     };
+    
 
     useEffect(() => {
         if (!isRecording && transcript) {

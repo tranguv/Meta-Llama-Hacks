@@ -22,6 +22,7 @@ app.use(bodyParser.json());
 app.post('/send-to-api', async (req, res) => {
   try {
       const { question } = req.body;
+      console.log("question, question");
       const response = await axios.post('http://195.242.13.143:8000/ask-all/', question);
 
       res.status(200).json(response.data);
