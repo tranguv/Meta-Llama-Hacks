@@ -1,21 +1,110 @@
-We are Care Collective Llama, and we are excited to present our baby: Llama Prob-Llama Helper.
+# Llama Prob-Llama Helper 🦙💡
 
-Our mission is simple: to empower doctors with innovative solutions that save time, allowing them to provide better care. Our goal is to transform the lives of millions of families impacted by Alzheimer's.
+Empowering caregivers and physicians with time-saving, innovative solutions to improve the quality of care for Alzheimer’s patients. Transforming the lives of millions of families impacted by Alzheimer’s disease.
 
-The problem: Alzheimer's dementia.
-There is currently no cure for dementia. In Canada, 750,000 people are living with Alzheimer's or other forms of dementia. Globally, the number stands at 55 million, and it's expected to double every 20 years. This degenerative condition leaves individuals dependent on their loved ones for daily care and support.
+---
+## 🎥 Demo
 
-Caregivers of dementia patients spend countless hours searching for resources to help their loved ones, often facing a burden that diminishes the quality of life for both the patient and themselves.
+Check out the demo video of Llama Prob-Llama Helper:  
+https://drive.google.com/file/d/1O5xDpY-nqYfj2gK1JkaKJn2kNI5QxPfd/view
 
-We consulted with Dr. Nihal Haque, a geriatrician with extensive experience working with Alzheimer's patients. The consultation process included defining workflows, building foundational knowledge of dementia care, and conducting end-user testing. He also provided us with a list of common questions caregivers and patients often ask.
+## 🌟 Our Mission
 
-This process led to the validation of two key use cases:
+To empower families and doctors with tools that:
+- Save valuable time.
+- Enhance the caregiving process.
+- Support physicians to focus more on patients.
 
-The Alzheimer's Society of Canada website: This site hosts numerous PDFs with valuable information on dementia care. But navigating through them to find the answers caregivers need is time-consuming and cumbersome.
+---
 
-Physician progress notes: We learned that physicians review 15 to 20 progress notes daily, repeating this process 20 to 30 times a day. For a team of seven doctors, this totals 140 notes daily. With each review taking about 5 minutes, that adds up to hundreds of hours each week—time that could be better spent on patient care.
+## 🧠 The Problem: Alzheimer’s Dementia
 
-That's when we decided to create Llama Helper:
+- **750,000 Canadians** live with Alzheimer’s or other forms of dementia.
+- **Globally**, over **55 million** people are affected.
+- This degenerative condition leaves individuals dependent on their caregivers, who face significant challenges, including:
+  - Navigating through complex resources.
+  - Managing caregiving tasks.
+  - Balancing personal and professional lives.
 
-For families: Caregiver-centric, family-friendly, conversational, and supportive.
-For doctors: Time-saving, physician-friendly, and burnout-reducing.
+---
+
+## 🔧 Our Solution
+
+### **Llama Prob-Llama Helper**: A caregiver-centric and physician-friendly platform.
+
+- **For Families**  
+  - Simple, conversational, and family-friendly.
+  - Focused on supporting caregivers' needs.
+
+- **For Doctors**  
+  - Time-saving workflows.
+  - Reduces burnout while enhancing productivity.
+
+---
+
+## 🚀 Features
+
+### 1. **Resource Navigator**
+- Quickly access relevant Alzheimer’s resources (e.g., Alzheimer’s Society of Canada).
+- Intelligent search and filtering reduce the time spent navigating PDFs and websites.
+
+### 2. **Physician Assistant**
+- Automates progress-note summaries.
+- Provides context-aware insights to streamline patient care.
+
+### 3. **Caregiver Support**
+- Offers a conversational interface for common caregiving questions.
+- Built-in tools to track caregiving tasks and resources.
+
+---
+
+## 💡 Inspiration
+
+The project draws inspiration from:
+- Families impacted by Alzheimer’s seeking better caregiving tools.
+- Physicians’ need for more efficient workflows to focus on patient care.
+- Previous project successes like **Tourific**, which fostered connections and simplified complex tasks.
+
+---
+
+## 🏗️ How We Built It
+
+- **Frontend**: Next.js, TypeScript, TailwindCSS, Shadcn UI
+- **Backend**: Node.js, Prisma, Express, Python
+- **Authentication**: Google Oauth
+- **Database**: PostgreSQL
+- **AI model**: LLama 3.2 model
+- **Version Control**: Git & GitHub
+
+---
+
+## 🥺 Challenges We Faced
+
+- Parsing unstructured content from PDFs into searchable data.
+- Designing an intuitive yet robust interface for diverse users (caregivers and physicians).
+- Managing feedback loops and ensuring adaptability for future features.
+
+---
+
+## 🥰 Accomplishments We’re Proud Of
+
+- Building an intuitive tool that bridges gaps between caregivers and resources.
+- Streamlining workflows for physicians, saving hundreds of hours annually.
+- Integrating feedback from real-world users into the development process.
+
+---
+
+## 💡 What We Learned
+
+- The importance of understanding end-user needs during development.
+- Effective communication to avoid overlapping work in a collaborative environment.
+- Strategies for creating a consistent and accessible user experience.
+
+---
+
+## 🚀 What’s Next
+
+1. Launch the platform across Canada.
+2. Add features for tracking caregiving milestones and health records.
+3. Integrate predictive AI tools for caregivers and physicians.
+4. Localize the tool for global markets.
