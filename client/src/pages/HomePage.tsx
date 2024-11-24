@@ -98,8 +98,8 @@ export default function HomePage() {
     }, [data]);
 
     return (
-        <div className="flex items-center justify-center py-[8%]">
-            <div className="flex flex-row w-[90vw] h-[75vh] bg-white rounded-[20px]">
+        <div className="flex items-center justify-center py-[8%] bg-[#8AA2D4]">
+            <div className="flex flex-row w-[90vw] h-[75vh] bg-[#e9eaf6] rounded-[20px]">
                 {/* Left Section - Doctor Image */}
                 <div className="w-1/3 h-full">
                     <Image
