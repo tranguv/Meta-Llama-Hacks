@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import doctor from "../../public/doctor.webp";
+import doctor from "../../public/doctor.png";
 import { Button } from "@/components/ui/button";
 import { FaMicrophone, FaPause } from "react-icons/fa";
 import { useEffect, useRef, useState } from "react";
