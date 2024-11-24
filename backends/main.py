@@ -2,6 +2,7 @@ from fastapi import FastAPI, UploadFile, HTTPException, Depends, BackgroundTasks
 from sqlalchemy.orm import Session
 from sqlalchemy import select
 from pydantic import BaseModel
+from fastapi.middleware.cors import CORSMiddleware
 import os
 import aiofiles
 import logging
@@ -10,32 +11,57 @@ from parsers import FileParser  # Placeholder for custom parser imports
 from chunks import TextProcessor, client
 from dotenv import load_dotenv
 import uvicorn
+from functools import lru_cache
+
 
 # Load environment variables
 load_dotenv()
 
 # Initialize FastAPI app and logging
 app = FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 logging.basicConfig(level=logging.INFO)
 
-class Question(BaseModel):
-    question: str
 
 class AskModel(BaseModel):
     document_id: int
     question: str
 
+class Question(BaseModel):
+    question: str
+    similarity_threshold: float = 0.7  # Allow configurable threshold
+    chunk_limit: int = 10  # Allow configurable chunk limit
 
-async def get_similar_chunks(file_id: int, question: str, db: Session, limit: int = 5):
+class ChunkResponse(BaseModel):
+    chunk_text: str
+    similarity_score: float
+    file_id: int
+    file_name: str
+
+
+
+
+async def get_similar_chunks_across_all(question: str, db: Session,limit:int=10):
     """Fetch similar chunks for a given question and file."""
     try:
-        response = client.embeddings.create(
-            model="BAAI/bge-en-icl",
-            input=question,
-            encoding_format="float"
-        )
-        question_embedding = response.data[0].embedding
-        query = select(FileChunk).where(FileChunk.file_id == file_id).order_by(FileChunk.embedding_vector.l2_distance(question_embedding)).limit(limit)
+        @lru_cache(maxsize=1000)
+        def get_question_embedding(q:str):
+            response = client.embeddings.create(
+                model="BAAI/bge-en-icl",
+                input=q,
+                encoding_format="float"
+            )
+            return response.data[0].embedding
+        question_embedding = get_question_embedding(question)
+        
+        query = select(FileChunk).order_by(FileChunk.embedding_vector.l2_distance(question_embedding)).limit(limit)
         similar_chunks = db.scalars(query).all()
         return similar_chunks
     except Exception as e:
@@ -91,15 +117,15 @@ async def upload_file(background_tasks: BackgroundTasks, file: UploadFile, db: S
         logging.error(f"Error processing file {file.filename}: {e}")
         raise HTTPException(status_code=500, detail="Error processing file")
 
-@app.post("/ask/")
-async def ask_question(request: AskModel, db: Session = Depends(get_db)):
+@app.post("/ask-all/")
+async def ask_question(request: Question, db: Session = Depends(get_db)):
     """Ask a question about a document."""
     if os.getenv("NEBIUS_API_KEY") is None:
         raise HTTPException(status_code=500, detail="NEBIUS API key not set")
 
     try:
-        similar_chunks = await get_similar_chunks(request.document_id, request.question, db)
-        second_similar_chunks = await get_similar_chunks(request.document_id, request.question, db, limit=10)
+        similar_chunks = await get_similar_chunks_across_all(request.question, db)
+        second_similar_chunks = await get_similar_chunks_across_all(request.question, db, limit=10)
 
         context = " ".join(chunk.chunk_text for chunk in similar_chunks)
         second_context = " ".join(chunk.chunk_text for chunk in second_similar_chunks)
@@ -117,15 +143,20 @@ async def ask_question(request: AskModel, db: Session = Depends(get_db)):
             messages=[{"role": "system", "content": second_system_message}, {"role": "user", "content": request.question}]
         )
 
-        # Synthesize final response
+        
+        # Generate final response with better prompt engineering
         final_message = (
-            f"First response: {primary_response.choices[0].message.content}. "
-            f"Second response: {secondary_response.choices[0].message.content}. "
-            "Generate a unified response."
+            "Synthesize a clear, concise answer based on these model responses:\n"
+            f"1. {primary_response.choices[0].message.content}\n"
+            f"2. {secondary_response.choices[0].message.content}\n"
+            "Focus on accuracy and relevance to the question. "
+            "Provide only the synthesized answer without mentioning the sources."
         )
         final_response = client.chat.completions.create(
             model="nvidia/Llama-3.1-Nemotron-70B-Instruct-HF",
-            messages=[{"role": "system", "content": final_message}, {"role": "user", "content": request.question}]
+            messages=[{"role": "system", "content": final_message}, {"role": "user", "content": request.question}],
+            temperature=0,
+            max_tokens=1000
         )
 
         return {"response": final_response.choices[0].message.content}
@@ -133,16 +164,5 @@ async def ask_question(request: AskModel, db: Session = Depends(get_db)):
         logging.error(f"Error processing question: {e}")
         raise HTTPException(status_code=500, detail="Error processing question")
 
-@app.post("/find-similar-chunks/{file_id}")
-async def find_similar_chunks(file_id: int, question: Question, db: Session = Depends(get_db)):
-    """Find similar chunks for a given file and question."""
-    try:
-        similar_chunks = await get_similar_chunks(file_id, question.question, db)
-        return [{"chunk_id": chunk.chunk_id, "chunk_text": chunk.chunk_text} for chunk in similar_chunks]
-    except Exception as e:
-        logging.error(f"Error finding similar chunks: {e}")
-        raise HTTPException(status_code=500, detail="Error finding similar chunks")
-
-    
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
