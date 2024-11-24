@@ -54,7 +54,7 @@ export default function HomePage() {
     const sendToApi = async (message: string) => {
         setIsLoading(true);
         try {
-            const response = await fetch(`/ask-all/`, {
+            const response = await fetch(`${NEXT_MODEL_API}/ask-all/`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
