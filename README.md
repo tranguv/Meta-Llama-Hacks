@@ -73,7 +73,6 @@ To empower families and doctors with tools that:
 The project draws inspiration from:
 - Families impacted by Alzheimer’s seeking better caregiving tools.
 - Physicians’ need for more efficient workflows to focus on patient care.
-- Previous project successes like **Tourific**, which fostered connections and simplified complex tasks.
 
 ---
 
