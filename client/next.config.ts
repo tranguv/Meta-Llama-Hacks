@@ -4,8 +4,8 @@ const nextConfig: NextConfig = {
   /* config options here */
   rewrites: async () => [
     {
-      source: "/",
-      destination: "https://localhost:5000",
+      source: "/ask-all",
+      destination: "http://195.242.13.143:8000/ask-all", // Original HTTP API
     },
   ],
   images: {
