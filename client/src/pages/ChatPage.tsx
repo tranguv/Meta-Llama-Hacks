@@ -18,7 +18,7 @@ interface ChatPageProps {
 const ChatPage: React.FC<ChatPageProps> = ({ data }) => {
     return (
         <ChatMessageList>
-            {data.map((chat: Chat, index: number) => (
+            {data?.map((chat: Chat, index: number) => (
                 <ChatBubble key={index} variant={chat.variant ? "sent" : "received"}>
                     <ChatBubbleAvatar fallback={chat.variant ? "US" : "AI"} />
                     <ChatBubbleMessage variant={chat.variant ? "sent" : "received"}>
