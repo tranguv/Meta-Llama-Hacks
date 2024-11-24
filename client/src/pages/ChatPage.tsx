@@ -29,7 +29,7 @@ const ChatPage: React.FC<ChatPageProps> = ({ data, isLoading }) => {
             ))}
             {isLoading && (
                 <ChatBubble layout="ai">
-                    <ChatBubbleAvatar src="/avatar.png" fallback="L" />
+                    <ChatBubbleAvatar fallback="AI" />
                     <ChatBubbleMessage variant="received" isLoading>
                         Loading...
                     </ChatBubbleMessage>
