@@ -8,6 +8,7 @@ import { useEffect, useRef, useState } from "react";
 import ChatPage from "./ChatPage";
 import { useVoiceToText, useTextToVoice } from "react-speakup";
 
+const NEXT_MODEL_API = process.env.NEXT_PUBLIC_MODEL_API;
 export default function HomePage() {
     const { startListening, stopListening, transcript, reset } = useVoiceToText({
         continuous: true,
@@ -53,7 +54,7 @@ export default function HomePage() {
     const sendToApi = async (message: string) => {
         setIsLoading(true);
         try {
-            const response = await fetch("http://195.242.13.143:8000/ask-all/", {
+            const response = await fetch(`${NEXT_MODEL_API}/ask-all/`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
