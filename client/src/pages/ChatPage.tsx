@@ -1,50 +1,33 @@
-import React from 'react';
-import { useVoiceToText } from "react-speakup";
-import { ChatBubble, ChatBubbleAvatar, ChatBubbleMessage, ChatBubbleAction, ChatBubbleActionWrapper } from '@/components/ui/chat/chat-bubble';
-import { ChatMessageList } from '@/components/ui/chat/chat-message-list';
-import { ChatInput } from '@/components/ui/chat/chat-input';
-import InputField from '@/components/input-field/InputField';
+import React from "react";
+import {
+    ChatBubble,
+    ChatBubbleAvatar,
+    ChatBubbleMessage,
+} from "@/components/ui/chat/chat-bubble";
+import { ChatMessageList } from "@/components/ui/chat/chat-message-list";
 
-const ChatPage = () => {
-    const { transcript } = useVoiceToText();
-    const [files, setFiles] = React.useState<File[]>([]);
+interface Chat {
+    variant: boolean;
+    message: string;
+}
 
-    const handleUploadFile = (e: EventTarget) => {
-        if (e instanceof Event) {
-            const target = e.target as HTMLInputElement;
-            if (target.files) {
-                const fileList = Array.from(target.files);
-                setFiles([...e.target.files]);
-            }
-        }
-    };
+interface ChatPageProps {
+    data: Chat[];
+}
 
+const ChatPage: React.FC<ChatPageProps> = ({ data }) => {
     return (
-        <div className='flex flex-col'>
-            <ChatMessageList>
-                <ChatBubble variant='sent'>
-                    <ChatBubbleAvatar fallback='US' />
-                    <ChatBubbleMessage variant='sent'>
-                        Hello, how has your day been? I hope you are doing well.
+        <ChatMessageList>
+            {data.map((chat: Chat, index: number) => (
+                <ChatBubble key={index} variant={chat.variant ? "sent" : "received"}>
+                    <ChatBubbleAvatar fallback={chat.variant ? "US" : "AI"} />
+                    <ChatBubbleMessage variant={chat.variant ? "sent" : "received"}>
+                        {chat.message}
                     </ChatBubbleMessage>
                 </ChatBubble>
-
-                <ChatBubble variant='received'>
-                    <ChatBubbleAvatar fallback='AI' />
-                    <ChatBubbleMessage variant='received'>
-                        Hi, I am doing well, thank you for asking. How can I help you today?
-                    </ChatBubbleMessage>
-                </ChatBubble>
-
-                <ChatBubble variant='received'>
-                    <ChatBubbleAvatar fallback='AI' />
-                    <ChatBubbleMessage isLoading />
-                </ChatBubble>
-            </ChatMessageList>
-            <InputField onSend={(text) => console.log(text)} onUploadFile={handleUploadFile} />
-        </div>
+            ))}
+        </ChatMessageList>
     );
 };
 
-export default ChatPage
-
+export default ChatPage;
