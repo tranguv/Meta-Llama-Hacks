@@ -40,7 +40,7 @@ export default function HomePage() {
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ question: message }), // Updated to send "question" as key
+                body: JSON.stringify({ question: message }), // Send the message as "question"
             });
     
             if (!response.ok) {
@@ -49,17 +49,23 @@ export default function HomePage() {
     
             const apiResponse = await response.json();
     
-            // Add the API response to the chat data
+            // Log the full response to inspect the data
+            console.log(apiResponse);
+    
+            // Remove markdown ** (bold markers) from the response text
+            const cleanResponse = apiResponse.response.replace(/\*\*/g, '').trim();
+            
+            // Add the cleaned API response to the chat data
             setData((prevData) => [
                 ...prevData,
-                { variant: false, message: apiResponse.reply || "No response" },
+                { variant: false, message: cleanResponse || "No response" },
             ]);
         } catch (error) {
             console.error("Error sending transcript to API:", error);
         }
     };
     
-
+    
     useEffect(() => {
         if (!isRecording && transcript) {
             // Add user's transcript to chat data
